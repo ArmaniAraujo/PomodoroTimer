@@ -1,26 +1,51 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, Component } from 'react';
-import { StyleSheet, Text, View, Picker } from 'react-native';
-import Button from './components/Buttons'
-import Buttons from './components/Buttons';
+import { StyleSheet, Text, View, Picker, Button } from 'react-native';
+import ButtonUI from './components/ButtonUI'
+import CountdownTimer from './components/CountdownTimer';
 
 // use stateless functional components when you dont really deal with state/change anyhting in state etc
 // const App = (props) => { return (.......) }
 // no class and no render function needed
 export default class App extends Component {
 	state = {
-		count: 1,
+		timer: 0,
 		onTime: 5,
 		offTime: 5,
-		pickedSelectedValue: 'default',
+		timePeriod: 'Time ON',
+		counting: false,
+
 	};
 
-	incrementCount = () => {
-		this.setState({count: this.state.count + 1})
+	handleDecrement = (timerType) => {
+		// change to using prevState
 
-		// 	{ pickerValues.map(minutes => {
-		//	return ( <Picker.Item label={minutes} value={minutes}/> )
-	//	})}
+		const { onTime, offTime } = this.state;
+		
+		if (timerType === 'work' && onTime > 0)
+			this.setState({onTime: onTime - 5})
+		else if (timerType === 'break' && offTime > 0)
+			this.setState({offTime: offTime - 5})
+	}
+
+	handleIncrement = (timerType) => {
+		// change to using prevState
+
+		const { onTime, offTime } = this.state;
+
+		if (timerType === 'work' && onTime < 60)
+			this.setState({onTime: onTime + 5})
+		else if (timerType === 'break' && offTime < 60)
+			this.setState({offTime: offTime + 5})		//this.setState({value: value + 5})
+	}
+
+	startCountdown() {
+		if (this.state.counting === false) {
+			this.setState({timer: this.state.onTime})
+		//	this.interval = setInterval (
+        //        () => this.setState((prevState) => ({timer: prevState.timer - 1})), 1000
+	//		);
+		}
 	}
 
 	render() {
@@ -30,36 +55,22 @@ export default class App extends Component {
 		return (
 
 			<View style={styles.container}>
-				
-				
 
-				<Text >Open up App.js to start working on your app!</Text>
-				
-				<Text style = {[styles.textColor, styles.margin]}> + {this.state.count}</Text>
-				<Button 
-					title='+'/>
-				<Button
-					title='-'/>
+				<Text style = {[styles.textColor, styles.margin]}>{this.state.timePeriod}</Text>
+				<CountdownTimer time={5}/>
 
+				<Text style = {[styles.textColor, styles.margin]}>Time {this.state.count}</Text>
 
-				{/* <Picker
-					style={styles.textColor, {backgroundColor: 'red', borderColor: 'red'}}
-					
-					selectedValue={this.state.pickedSelectedValue}
-        			style={{ height: 50, width: 150 }}
-        			onValueChange={(itemValue, itemIndex) => this.setState({pickedSelectedValue: itemValue})}
-				>
+				<Text style = {[styles.textColor, styles.margin]}>Work for {this.state.onTime} minutes</Text>
+				<ButtonUI onPress={() => this.handleIncrement('work')} title={'     +     '}/>
+				<ButtonUI onPress={() => this.handleDecrement('work')} title={'     -      '} style={{margin: 10}}/>
 
-				{ pickerValues.map((item, index) => {
-        			return (<Picker.Item label={item} value={index} key={index}/>)
-			})}
-				</Picker> */}
+				<Text style = {[styles.textColor, styles.margin]}>Break for {this.state.offTime} minutes</Text>
+				<ButtonUI onPress={() => this.handleIncrement('break')} title={'     +     '}/>
+				<ButtonUI onPress={() => this.handleDecrement('break')} title={'     -      '} style={{margin: 10}}/>
+			
+				<ButtonUI onPress={this.startCountdown} title='START'/>
 
-				<Button
-				title='Click me!'
-				onPress={this.incrementCount}
-				/>
-				
 				<StatusBar style="auto" />
 			</View>
 		);
