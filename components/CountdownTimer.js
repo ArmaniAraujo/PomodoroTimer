@@ -2,36 +2,31 @@ import React, { useState, Component } from 'react';
 import { StyleSheet, Text, View, Picker, Button } from 'react-native';
 
 class CountdownTimer extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { 
-            time: this.props.time,
-            startTimer: false, 
-        };
+
+    // cosmetic changes to CountdownTimer digits
+    printMethod () {
+    
+        const {minutes, seconds} = this.props
+
+        var mString = minutes
+        var sString = seconds
+
+        if (minutes < 10)
+            mString = '0' + minutes
+        if (seconds < 10)
+            sString = '0' + seconds
+
+        return(
+        <View>
+            <Text style = {[styles.textColor, styles.margin]}>{mString.toString()}:{sString.toString()}</Text>
+
+        </View>
+        )    
     }
-
-    componentDidMount() {
-        if (this.state.startTimer) {
-            this.interval = setInterval (
-                () => this.setState((prevState) => ({time: prevState.time - 1})), 1000
-            );
-        }
-    }
-
-    componentDidUpdate() {
-        (this.state.time === 0) && clearInterval(this.interval)
-    }
-
-    componentWillUnmount() {
-        clearInterval(this.interval);
-       }
-
+    
     render() {
-        console.log('im in')
         return (
-            <View>
-                <Text style = {[styles.textColor, styles.margin]}>{this.state.time}</Text>
-            </View>
+            this.printMethod()
         );
     }
 }
@@ -41,12 +36,14 @@ export default CountdownTimer;
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: '#000',
+		backgroundColor: 'blue',
 		alignItems: 'center',
 		justifyContent: 'center',
 	},
 	textColor: {
-		color: '#fff'
+        color: '#fff',
+        backgroundColor: '#121212',
+        fontSize: 100
 	},
 	margin: {
 		marginBottom: 5
