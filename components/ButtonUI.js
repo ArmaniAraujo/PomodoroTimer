@@ -10,7 +10,7 @@ class ButtonUI extends Component {
                 <Button 
                     title={this.props.title}
                     onPress={this.props.onPress}
-                    style={this.props.style}
+                    style={[this.props.style, {margin: 8}]}
                     value={this.props.value}
                     type='solid'
                 />
