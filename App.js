@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, Component } from 'react';
-import { StyleSheet, Text, View, Picker, Button } from 'react-native';
+import { StyleSheet, Text, View, Picker, Button, Image, ImageBackground } from 'react-native';
 import ButtonUI from './components/ButtonUI'
 import CountdownTimer from './components/CountdownTimer';
 import Time from './components/Time';
@@ -61,19 +61,25 @@ export default class App extends Component {
 		console.log('offTime: ', offTime)
 	}
 
+
+
 	startCountdown = () => {
 		const { counting, timer, onTime, offTime, timePeriod} = this.state;
-		
-		if (timePeriod === '')
-			this.setState({timePeriod: 'Time ON'})
+
 
 		if (counting === false) {
 			this.setState({counting: true})
-			if (timePeriod === 'Time ON')
-				this.setState({timer: new Date(onTime * 1000)})	// * 60000 converts milliseconds to minutes	
-			else if (timePeriod === 'Time OFF')
-				this.setState({timer: new Date(offTime * 1000)})	// * 60000 converts milliseconds to minutes
+			//alert(onTime + '' + offTime + '' + timePeriod)
 
+			if (timePeriod === 'OFF')
+				this.setState({timer: new Date(offTime * 1000)})	// * 60000 converts milliseconds to minutes	
+			else
+			{
+				
+				this.setState({
+					timePeriod: 'ON',
+					timer: new Date(onTime * 1000)})	// * 60000 converts milliseconds to minutes
+			}
 			this.interval = setInterval (
                 () => this.checkCountdown(), 1000
 			);
@@ -81,7 +87,7 @@ export default class App extends Component {
 	}
 
 	checkCountdown = () => {
-		const { counting, timer, onTime, timePeriod } = this.state;
+		const { counting, timer, timePeriod } = this.state;
 
 		// check if one time period is over
 		if(timer.getMinutes() === 0 && timer.getSeconds() === 0) 
@@ -92,10 +98,10 @@ export default class App extends Component {
 
 			// toggle timePeriod
 
-			if (timePeriod === 'Time ON')
-				this.setState({timePeriod: 'Time OFF'})
+			if (timePeriod === 'ON')
+				this.setState({timePeriod: 'OFF'})
 			else
-				this.setState({timePeriod: 'Time ON'})
+				this.setState({timePeriod: 'ON'})
 
 			// call startCountdown, to start ON or OFF time
 			this.startCountdown()
@@ -103,6 +109,7 @@ export default class App extends Component {
 		}
 		else 
 		{
+			
 			this.setState({timer: new Date(timer.getTime() - 1000)})	// 1000 milliseconds
 			console.log(timer.getSeconds())
 		}
@@ -132,26 +139,23 @@ export default class App extends Component {
 					<StatusBar style="auto" />
 				</View>
 
-				<View style = {[styles.buttons, styles.buttonRow, {backgroundColor: 'red'}]}>
+				<View style = {[styles.buttons, styles.buttonRow, {backgroundColor: '#121212'}]}>
 					<ButtonUI onPress={this.startCountdown} title='START'/>
 					<ButtonUI onPress={this.stopCountdown} title='STOP'/>
 				</View>
 
-				<View style = {[styles.buttons]}>
-					<Text style = {[styles.textColor, styles.margin]}>Work for {this.state.onTime} minutes</Text>
-					<Text style = {[styles.textColor, styles.margin]}>Break for {this.state.offTime} minutes</Text>
-				</View>
+
 
 				<View style = {[styles.buttons, styles.buttonRow]}>
-					<ButtonUI onPress={() => this.handleIncrement('work')} title={'     +     '} style={styles.buttonRow}/>
+					<ButtonUI onPress={() => this.handleIncrement('work')} title={'+'} style={styles.buttonRow}/>
 					<Time time={this.state.onTime}/>
-					<ButtonUI onPress={() => this.handleDecrement('work')} title={'     -      '}/>
+					<ButtonUI onPress={() => this.handleDecrement('work')} title={'-'}/>
 				</View>
 
 				<View style = {[styles.buttons, styles.buttonRow]}>
-					<ButtonUI onPress={() => this.handleIncrement('break')} title={'     +break     '}/>
+					<ButtonUI onPress={() => this.handleIncrement('break')} title={'+'}/>
 					<Time time={this.state.offTime}/>
-					<ButtonUI onPress={() => this.handleDecrement('break')} title={'     - break     '}/>
+					<ButtonUI onPress={() => this.handleDecrement('break')} title={'-'}/>
 				</View>
 			</React.Fragment>
 		);
@@ -181,9 +185,9 @@ const styles = StyleSheet.create({
 	},
 	buttons: {
 		flex: 1,
-		backgroundColor: 'blue',
+		backgroundColor: '#121212',
 		justifyContent: 'center',
-		alignItems: 'center',
+		alignItems: 'stretch',
 	},
 
 	})
