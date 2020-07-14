@@ -26,7 +26,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         fontSize: 30
         
-
-
 	},
 	})
